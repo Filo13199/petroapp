@@ -1,0 +1,84 @@
+{
+  "info": {
+    "name": "petroapp",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "POST /transfers - insert batch",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/transfers",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"events\": [\n    {\n      \"event_id\": \"evt-001\",\n      \"station_id\": \"S1\",\n      \"amount\": 150.75,\n      \"status\": \"approved\",\n      \"created_at\": \"2026-02-19T10:00:00Z\"\n    },\n    {\n      \"event_id\": \"evt-002\",\n      \"station_id\": \"S1\",\n      \"amount\": 200.00,\n      \"status\": \"approved\",\n      \"created_at\": \"2026-02-19T11:00:00Z\"\n    },\n    {\n      \"event_id\": \"evt-003\",\n      \"station_id\": \"S2\",\n      \"amount\": 99.50,\n      \"status\": \"pending\",\n      \"created_at\": \"2026-02-19T12:00:00Z\"\n    }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /transfers - duplicate event_id",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/transfers",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"events\": [\n    {\n      \"event_id\": \"evt-001\",\n      \"station_id\": \"S1\",\n      \"amount\": 150.75,\n      \"status\": \"approved\",\n      \"created_at\": \"2026-02-19T10:00:00Z\"\n    }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /transfers - partial accept (mixed valid and invalid)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/transfers",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"events\": [\n    {\n      \"event_id\": \"evt-good\",\n      \"station_id\": \"S1\",\n      \"amount\": 50.00,\n      \"status\": \"approved\",\n      \"created_at\": \"2026-02-19T10:00:00Z\"\n    },\n    {\n      \"event_id\": \"\",\n      \"station_id\": \"S1\",\n      \"amount\": 50.00,\n      \"status\": \"approved\",\n      \"created_at\": \"2026-02-19T10:00:00Z\"\n    },\n    {\n      \"event_id\": \"evt-bad-date\",\n      \"station_id\": \"S1\",\n      \"amount\": 50.00,\n      \"status\": \"approved\",\n      \"created_at\": \"not-a-date\"\n    },\n    {\n      \"event_id\": \"evt-negative\",\n      \"station_id\": \"S1\",\n      \"amount\": -10.00,\n      \"status\": \"approved\",\n      \"created_at\": \"2026-02-19T10:00:00Z\"\n    }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "POST /transfers - malformed JSON (400)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/transfers",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{ not valid json"
+        }
+      }
+    },
+    {
+      "name": "GET /stations/:station_id/summary - S1",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/stations/S1/summary"
+      }
+    },
+    {
+      "name": "GET /stations/:station_id/summary - unknown station (404)",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/stations/UNKNOWN/summary"
+      }
+    }
+  ]
+}
