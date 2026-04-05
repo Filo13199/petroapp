@@ -135,6 +135,6 @@ Invalid events (missing required fields, negative amount, unparseable `created_a
 
 | Decision | Choice | Alternative |
 |---|---|---|
-| Storage | In-memory | SQLite/Postgres — persistence across restarts, easier horizontal scale |
+| Storage | In-memory (custom) | HashiCorp's `go-memdb` would provide a richer in-memory store with indexing and transactions out of the box, but a plain map + mutex is sufficient here and avoids the extra dependency. For persistence, SQLite/Postgres would survive restarts and scale horizontally. |
 | Uniqueness | Hash map + mutex | DB unique constraint — automatic, but adds infra dependency |
 | Batch errors | Partial accept | Fail-fast — simpler caller contract, but wastes valid data on one bad record |
